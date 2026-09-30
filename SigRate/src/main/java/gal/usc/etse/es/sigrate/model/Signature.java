@@ -13,7 +13,11 @@ public class Signature {
     @Id
     private String id;
     private int year;
-    private int degree;
-    @OneToMany
-    private List<Review> reviews;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Degree degree;
+    @OneToMany(
+            mappedBy = "signature",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )    private List<Review> reviews;
 }
