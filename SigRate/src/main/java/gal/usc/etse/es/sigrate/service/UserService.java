@@ -20,4 +20,12 @@ public class UserService {
         return UserDTO.from(userRepository.save(User.from(user)));
 
     }
+
+    public List<UserDTO> get() {
+        return userRepository.findAll().stream().map(UserDto::from).toList();
+    }
+
+    public UserDTO getById(Long id) {
+        return UserDTO.from(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"))));
+    }
 }

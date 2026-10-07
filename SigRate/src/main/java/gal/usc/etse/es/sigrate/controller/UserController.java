@@ -22,17 +22,17 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAlUsers() {
+    public ResponseEntity<List<UserDTO>> getAlUsers() {
         return ResponseEntity.ok(users.get());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUSerById(@PathVariable Long id) {
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<UserDTO> getUSerDtoById(@PathVariable Long id) {
         return ResponseEntity.ok(users.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
         return ResponseEntity.ok(users.create(user));
     }
 }
