@@ -6,4 +6,8 @@ public record UserDTO(String id, String username, String email) {
     public static UserDTO FromEntity(User user) {
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail());
     }
+
+    public static UserDTO from(User user) {
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail());
+    }
 }

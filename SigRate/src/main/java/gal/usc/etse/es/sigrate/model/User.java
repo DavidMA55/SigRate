@@ -1,5 +1,6 @@
 package gal.usc.etse.es.sigrate.model;
 
+import gal.usc.etse.es.sigrate.model.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,11 +11,9 @@ import java.util.List;
 @Table
 @Getter
 @Setter
-/*
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
-*/
+
 public class User {
     @Id
     @GeneratedValue
@@ -22,9 +21,19 @@ public class User {
     private String username;
     private String email;
     @OneToMany(
-            mappedBy = "user",
+            mappedBy = "users",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<Review> reviews = new ArrayList<>();
+
+    public User(String id, String username, String email) {
+        this.id = id;
+        this.username = username;
+        this.email= email;
+    }
+
+    public static User from(UserDTO user) {
+        return new User(user.id(), user.username(), user.email());
+    }
 }

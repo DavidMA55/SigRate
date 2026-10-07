@@ -4,6 +4,7 @@ import gal.usc.etse.es.sigrate.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -11,7 +12,7 @@ import java.util.List;
 public class UserController {
 
     @GetMapping
-    public List<User> getAlUsers() {
+    public List<User> getAllUsers() {
         //Codigo
     }
 
@@ -23,6 +24,6 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User user) {
         //Codigo
-        User u = new User();
+        return new User();
     }
 }

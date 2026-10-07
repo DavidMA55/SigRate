@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository {
+public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByEmail(String email);
+    Optional<User> findByUsername(String username);
 
     @Query("SELECT u FROM User u WHERE u.email LIKE %:dominio")
     List<User> buscarPorDominioEmail(@Param("dominio") String dominio);
-
 }
