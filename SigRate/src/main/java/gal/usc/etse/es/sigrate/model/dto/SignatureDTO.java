@@ -6,4 +6,8 @@ public record SignatureDTO(String id, int year, String degreeId) {
     public static SignatureDTO FromEntity(Signature signature) {
         return new SignatureDTO(signature.getId(), signature.getYear(), signature.getDegree().getId());
     }
+
+    public static SignatureDTO from(Signature signature) {
+        return new SignatureDTO(signature.getId(), signature.getYear(), signature.getDegree().getId());
+    }
 }

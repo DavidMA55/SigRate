@@ -17,4 +17,28 @@ public class Degree {
             orphanRemoval = true
     )
     private List<Signature> signatures;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Signature> getSignatures() {
+        return signatures;
+    }
+
+    public void setSignatures(List<Signature> signatures) {
+        this.signatures = signatures;
+    }
 }

@@ -13,6 +13,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User loadUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
     public UserDTO create(UserDTO user) {
         var dbUser = userRepository.findByUsername(user.username());
         if (dbUser.isPresent()) {
@@ -24,7 +28,7 @@ public class UserService {
     }
 
     public List<UserDTO> get() {
-        return userRepository.findAll().stream().map(UserDto::from).toList();
+        return userRepository.findAll().stream().map(UserDTO::from).toList();
     }
 
     public UserDTO getById(Long id) {
