@@ -1,6 +1,7 @@
 package gal.usc.etse.es.sigrate.controller;
 
 import gal.usc.etse.es.sigrate.model.User;
+import gal.usc.etse.es.sigrate.model.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import gal.usc.etse.es.sigrate.service.UserService;

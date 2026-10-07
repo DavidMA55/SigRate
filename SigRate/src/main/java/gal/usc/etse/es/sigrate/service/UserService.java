@@ -26,6 +26,6 @@ public class UserService {
     }
 
     public UserDTO getById(Long id) {
-        return UserDTO.from(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"))));
+        return UserDTO.from(loadUserById(id));
     }
 }
