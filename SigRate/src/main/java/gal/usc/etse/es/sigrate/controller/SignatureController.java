@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("signatures")
 public class SignatureController {
-    @Autowired
     private final SignatureService signature;
 
     @Autowired
@@ -25,7 +24,7 @@ public class SignatureController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Signature> getSignatureById(@PathVariable String id) {
+    public ResponseEntity<Signature> getById(@PathVariable String id) {
         return ResponseEntity.ok(signatureService.getById(id));
     }
 
