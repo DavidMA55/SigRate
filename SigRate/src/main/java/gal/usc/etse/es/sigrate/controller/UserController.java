@@ -14,10 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("users")
 public class UserController {
-    @Autowired
     private final UserService users;
 
-    @Autowired
     public UserController(UserService users) {
         this.users = users;
     }
@@ -33,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
         return ResponseEntity.ok(users.create(user));
     }
 }
