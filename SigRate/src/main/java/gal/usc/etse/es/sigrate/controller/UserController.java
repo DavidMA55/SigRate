@@ -3,6 +3,9 @@ package gal.usc.etse.es.sigrate.controller;
 import gal.usc.etse.es.sigrate.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import gal.usc.etse.es.sigrate.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,20 +13,26 @@ import java.util.List;
 @RestController
 @RequestMapping("users")
 public class UserController {
+    @Autowired
+    private final UserService users;
+
+    @Autowired
+    public UserController(UserService users) {
+        this.users = users;
+    }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        //Codigo
+    public ResponseEntity<List<User>> getAlUsers() {
+        return ResponseEntity.ok(users.get());
     }
 
     @GetMapping("/{id}")
-    public User getUSerById(@PathVariable Long id) {
-        //Codigo
+    public ResponseEntity<User> getUSerById(@PathVariable Long id) {
+        return ResponseEntity.ok(users.getById(id));
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        //Codigo
-        return new User();
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(users.create(user));
     }
 }
