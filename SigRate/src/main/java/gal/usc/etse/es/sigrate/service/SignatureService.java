@@ -16,7 +16,7 @@ public class SignatureService {
 
     public SignatureDTO addSignature(SignatureDTO signatureDTO) throws DuplicatedSignatureException {
         if (!signatureRepository.existsById(signatureDTO.id())) {
-            signatureDTO.save(Signature.from(signatureDTO));
+            signatureRepository.save(Signature.from(signatureDTO));
             return signatureDTO;
         } else {
             throw new DuplicatedSignatureException(signatureDTO);
@@ -28,6 +28,6 @@ public class SignatureService {
     }
 
     public SignatureDTO getById(String id) {
-        return SignatureDTO.from(loadSignatureById(id));
+        return signatureRepository.findById(id).map(SignatureDTO::from).orElse(null);
     }
 }
