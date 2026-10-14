@@ -1,5 +1,6 @@
 package gal.usc.etse.es.sigrate.controller;
 
+import gal.usc.etse.es.sigrate.exception.DuplicatedSignatureException;
 import gal.usc.etse.es.sigrate.model.Signature;
 import gal.usc.etse.es.sigrate.model.dto.SignatureDTO;
 import gal.usc.etse.es.sigrate.service.SignatureService;
@@ -15,7 +16,6 @@ import java.util.List;
 public class SignatureController {
     private final SignatureService signatureService;
 
-    @Autowired
     public SignatureController(SignatureService signatureService) {
         this.signatureService = signatureService;
     }
@@ -31,7 +31,7 @@ public class SignatureController {
     }
 
     @PostMapping
-    public ResponseEntity<SignatureDTO> add(@RequestBody SignatureDTO signature) {
+    public ResponseEntity<SignatureDTO> add(@RequestBody SignatureDTO signature) throws DuplicatedSignatureException {
         signature = signatureService.addSignature(signature);
         return ResponseEntity
                 .created(MvcUriComponentsBuilder.fromMethodName(SignatureController.class, "getSignature", signature.id()).build().toUri())

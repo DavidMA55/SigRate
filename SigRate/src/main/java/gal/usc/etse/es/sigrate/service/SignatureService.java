@@ -4,9 +4,11 @@ import gal.usc.etse.es.sigrate.model.Signature;
 import gal.usc.etse.es.sigrate.model.dto.SignatureDTO;
 import gal.usc.etse.es.sigrate.repository.SignatureRepository;
 import gal.usc.etse.es.sigrate.exception.DuplicatedSignatureException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class SignatureService {
     private final SignatureRepository signatureRepository;
 

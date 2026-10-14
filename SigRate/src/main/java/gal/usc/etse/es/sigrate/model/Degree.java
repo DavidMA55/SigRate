@@ -1,9 +1,13 @@
 package gal.usc.etse.es.sigrate.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
+@Getter
 @Entity
 @Table
 public class Degree {
@@ -18,27 +22,13 @@ public class Degree {
     )
     private List<Signature> signatures;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public Degree(int id) {
         this.id = id;
+        this.name = "A";
     }
 
-    public List<Signature> getSignatures() {
-        return signatures;
+    public Degree() {
+
     }
 
-    public void setSignatures(List<Signature> signatures) {
-        this.signatures = signatures;
-    }
 }

@@ -1,15 +1,23 @@
 package gal.usc.etse.es.sigrate.model;
 
+import gal.usc.etse.es.sigrate.model.dto.SignatureDTO;
+import gal.usc.etse.es.sigrate.model.dto.UserDTO;
 import jakarta.persistence.*;
+import lombok.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Setter
+@Getter
 @Entity
 @Table
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class Signature {
     @Id
+    @NonNull
     private String id;
     private int year;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -19,37 +27,15 @@ public class Signature {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
-    public String getId() {
-        return id;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public Degree getDegree() {
-        return degree;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public void setId(String id) {
+    public Signature(String id, int year, int degreeId) {
         this.id = id;
+        this.year = year;
+        this.degree = new Degree(degreeId);
     }
 
-    public void setDegree(Degree degree) {
-        this.degree = degree;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    public static Signature from(SignatureDTO signature) {
+        return new Signature(signature.id(), signature.year(), signature.degreeId());
     }
 }
