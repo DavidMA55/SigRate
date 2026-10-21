@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
@@ -17,7 +17,7 @@ public class Review {
     private Long id;
     private int rating;
     private String text;
-    private Date date;
+    private LocalDateTime date;
     @ManyToOne(fetch = FetchType.LAZY)
     private Signature signature;
     @ManyToOne(fetch = FetchType.LAZY)
