@@ -29,13 +29,4 @@ public class Signature {
     )
     private List<Review> reviews = new ArrayList<>();
 
-    public Signature(String id, int year, int degreeId) {
-        this.id = id;
-        this.year = year;
-        this.degree = new Degree(degreeId);
-    }
-
-    public static Signature from(SignatureDTO signature) {
-        return new Signature(signature.id(), signature.year(), signature.degreeId());
-    }
 }

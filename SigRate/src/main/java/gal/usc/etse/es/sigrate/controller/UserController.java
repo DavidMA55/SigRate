@@ -27,7 +27,8 @@ public class UserController {
 
     @GetMapping("/dto/{id}")
     public ResponseEntity<UserDTO> getUSerDtoById(@PathVariable Long id) {
-        return ResponseEntity.ok(users.getById(id));
+        UserDTO dto = users.getById(id);
+        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
     @PostMapping

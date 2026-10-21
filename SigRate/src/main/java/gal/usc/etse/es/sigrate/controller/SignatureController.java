@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import java.util.List;
 
 @RestController
-@RequestMapping("signatures")
+@RequestMapping("/signatures")
 public class SignatureController {
     private final SignatureService signatureService;
 
@@ -27,14 +27,18 @@ public class SignatureController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SignatureDTO> getById(@PathVariable String id) {
-        return ResponseEntity.ok(signatureService.getById(id));
+        SignatureDTO dto = signatureService.getById(id);
+        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<SignatureDTO> add(@RequestBody SignatureDTO signature) throws DuplicatedSignatureException {
+    public ResponseEntity<SignatureDTO> add(@RequestBody SignatureDTO signature)
+            throws DuplicatedSignatureException {
         signature = signatureService.addSignature(signature);
         return ResponseEntity
-                .created(MvcUriComponentsBuilder.fromMethodName(SignatureController.class, "getSignature", signature.id()).build().toUri())
+                .created(MvcUriComponentsBuilder
+                        .fromMethodName(SignatureController.class, "getById", signature.id())
+                        .build().toUri())
                 .body(signature);
     }
 }

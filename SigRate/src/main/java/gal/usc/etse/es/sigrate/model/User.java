@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,17 +17,17 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
     private String username;
     private String email;
     @OneToMany(
-            mappedBy = "users",
+            mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<Review> reviews = new ArrayList<>();
 
-    public User(String id, String username, String email) {
+    public User(Long id, String username, String email) {
         this.id = id;
         this.username = username;
         this.email= email;

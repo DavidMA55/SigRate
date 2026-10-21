@@ -2,6 +2,7 @@ package gal.usc.etse.es.sigrate.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -22,13 +23,7 @@ public class Degree {
     )
     private List<Signature> signatures;
 
-    public Degree(int id) {
-        this.id = id;
-        this.name = "A";
-    }
 
-    public Degree() {
-
-    }
+    public Degree() {}
 
 }

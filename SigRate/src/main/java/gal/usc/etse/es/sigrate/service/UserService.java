@@ -1,5 +1,6 @@
 package gal.usc.etse.es.sigrate.service;
 
+import gal.usc.etse.es.sigrate.exception.DuplicatedUserException;
 import gal.usc.etse.es.sigrate.model.User;
 import gal.usc.etse.es.sigrate.model.dto.UserDTO;
 import gal.usc.etse.es.sigrate.repository.UserRepository;
@@ -20,13 +21,10 @@ public class UserService {
     }
 
     public UserDTO create(UserDTO user) {
-        var dbUser = userRepository.findByUsername(user.username());
-        if (dbUser.isPresent()) {
-            //Excepcion de user duplicado
+        if (userRepository.findByUsername(user.username()).isPresent()) {
+            throw new DuplicatedUserException(user.username());
         }
-
         return UserDTO.from(userRepository.save(User.from(user)));
-
     }
 
     public List<UserDTO> get() {
@@ -34,6 +32,7 @@ public class UserService {
     }
 
     public UserDTO getById(Long id) {
-        return UserDTO.from(loadUserById(id));
+        User user = loadUserById(id);
+        return user == null ? null : UserDTO.from(user);
     }
 }
