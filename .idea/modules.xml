@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SigRate.iml" filepath="$PROJECT_DIR$/.idea/SigRate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gal.usc.etse.es.SigRate.main.iml" filepath="$PROJECT_DIR$/.idea/modules/gal.usc.etse.es.SigRate.main.iml" />
     </modules>
   </component>
 </project>
