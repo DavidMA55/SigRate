@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SigRate · Opiniones sobre asignaturas</title>
+<style>
+:root{
+  --ink:#17233B; --ink-2:#55627D; --paper:#EDF0F5; --surface:#FFFFFF; --line:#D5DBE6;
+  --accent:#0F7C78; --accent-ink:#FFFFFF; --danger:#B42318; --ok:#157F4B;
+  --rail:#142039; --rail-ink:#E8ECF4; --rail-dim:#9AA9C4;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ink:#E8ECF4; --ink-2:#9AA6BD; --paper:#0E1525; --surface:#161F37; --line:#2A3556;
+    --accent:#3CC5BD; --accent-ink:#04201F; --danger:#FF8A7A; --ok:#5BD89B;
+    --rail:#0A1020; color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100%}
+
+/* Barra lateral */
+.rail{background:var(--rail);color:var(--rail-ink);padding:32px 24px;display:flex;flex-direction:column;gap:32px;position:sticky;top:0;height:100vh}
+.brand{font-family:var(--serif);font-size:32px;font-weight:700;letter-spacing:-.01em;line-height:1}
+.brand small{display:block;margin-top:10px;font:400 14px/1.4 var(--sans);color:var(--rail-dim);letter-spacing:0}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:8px;color:var(--rail-dim);text-decoration:none;font-weight:500}
+.nav a:hover{color:var(--rail-ink);background:rgba(255,255,255,.06)}
+.nav a[aria-current="page"]{background:rgba(255,255,255,.12);color:var(--rail-ink)}
+.nav .n{font-size:13px;opacity:.8}
+.status{margin-top:auto;font-size:13px;color:var(--rail-dim);display:flex;gap:8px;align-items:center}
+.dot{width:9px;height:9px;border-radius:50%;background:#7C879C;flex:none}
+.status[data-ok="true"] .dot{background:#4ADE80}
+.status[data-ok="false"] .dot{background:#F87171}
+
+/* Contenido */
+main{padding:48px clamp(20px,5vw,64px) 80px;max-width:1040px;width:100%}
+.head{display:flex;flex-wrap:wrap;gap:16px 24px;justify-content:space-between;align-items:end;margin-bottom:28px}
+h1{font-family:var(--serif);font-size:clamp(34px,5vw,48px);line-height:1.05;margin:0;letter-spacing:-.015em}
+.lead{margin:8px 0 0;color:var(--ink-2);max-width:56ch}
+.search{min-width:220px;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.search::placeholder{color:var(--ink-2)}
+
+/* Formulario */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:40px}
+.panel h2{margin:0 0 14px;font-size:17px}
+form{display:flex;flex-wrap:wrap;gap:14px;align-items:end}
+label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500;flex:1 1 160px}
+label input{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+label input:focus{border-color:var(--accent)}
+.btn{padding:11px 20px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.55;cursor:wait}
+
+/* Asignaturas agrupadas por curso */
+.year{margin-bottom:44px}
+.year-head{display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:18px}
+.year-head .num{font-family:var(--serif);font-size:64px;font-weight:700;line-height:1;letter-spacing:-.03em}
+.year-head .count{color:var(--ink-2);font-size:14px}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-left:6px solid hsl(var(--h) 55% 48%);border-radius:10px;padding:16px 16px 14px}
+.card .code{font-family:var(--serif);font-size:22px;font-weight:700;overflow-wrap:anywhere}
+.card .meta{margin-top:6px;font-size:14px;color:var(--ink-2)}
+
+/* Usuarios */
+.users{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.users li{display:flex;gap:14px;align-items:center;padding:14px 18px}
+.users li+li{border-top:1px solid var(--line)}
+.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:hsl(var(--h) 45% 42%);flex:none}
+.users .name{font-weight:600}
+.users .mail{color:var(--ink-2);font-size:14px;overflow-wrap:anywhere}
+
+.empty{padding:28px;border:1px dashed var(--line);border-radius:12px;color:var(--ink-2)}
+.empty strong{display:block;color:var(--ink);margin-bottom:4px}
+.empty.error strong{color:var(--danger)}
+[hidden]{display:none!important}
+
+/* Aviso */
+.toast{position:fixed;right:20px;bottom:20px;max-width:min(380px,calc(100vw - 40px));padding:14px 18px;border-radius:10px;background:var(--ink);color:var(--paper);font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,.25);transform:translateY(24px);opacity:0;pointer-events:none;transition:transform .25s,opacity .25s}
+.toast.show{transform:none;opacity:1}
+.toast[data-kind="error"]{background:var(--danger);color:#fff}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  .rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:16px 20px;gap:12px 24px}
+  .brand small{display:none}
+  .nav{flex-direction:row}
+  .status{margin:0 0 0 auto}
+  main{padding-top:28px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <div class="brand">SigRate<small>Lo que opinan los estudiantes de cada asignatura.</small></div>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#asignaturas" id="nav-asignaturas">Asignaturas <span class="n" id="n-sig"></span></a>
+      <a href="#usuarios" id="nav-usuarios">Usuarios <span class="n" id="n-usr"></span></a>
+    </nav>
+    <div class="status" id="status" data-ok="unknown"><span class="dot"></span><span id="status-text">Conectando…</span></div>
+  </aside>
+
+  <main>
+    <section id="view-asignaturas" aria-labelledby="t-sig">
+      <div class="head">
+        <div>
+          <h1 id="t-sig">Asignaturas</h1>
+          <p class="lead">Todas las asignaturas registradas, agrupadas por curso. El color de la barra indica el grado.</p>
+        </div>
+        <input class="search" id="q" type="search" placeholder="Buscar por código" aria-label="Buscar asignatura por código">
+      </div>
+      <div class="panel">
+        <h2>Añadir asignatura</h2>
+        <form id="f-sig">
+          <label>Código<input name="id" required maxlength="40" placeholder="p. ej. ES-101"></label>
+          <label>Curso<input name="year" type="number" min="1" max="6" required placeholder="1"></label>
+          <label>Número de grado<input name="degreeId" type="number" min="1" required placeholder="1"></label>
+          <button class="btn" type="submit">Crear asignatura</button>
+        </form>
+      </div>
+      <div id="list-sig"></div>
+    </section>
+
+    <section id="view-usuarios" aria-labelledby="t-usr" hidden>
+      <div class="head">
+        <div>
+          <h1 id="t-usr">Usuarios</h1>
+          <p class="lead">Personas registradas que pueden dejar reseñas.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Añadir usuario</h2>
+        <form id="f-usr">
+          <label>Nombre de usuario<input name="username" required maxlength="40" placeholder="p. ej. lucia"></label>
+          <label>Correo electrónico<input name="email" type="email" required placeholder="lucia@usc.es"></label>
+          <button class="btn" type="submit">Crear usuario</button>
+        </form>
+      </div>
+      <div id="list-usr"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const state = { signatures: [], users: [] };
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+const hue = s => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
+
+async function api(path, options){
+  const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...options });
+  if (!res.ok){
+    let detail;
+    try { const j = await res.json(); detail = j.detail || j.message; } catch (_) {}
+    const err = new Error(detail || 'Error ' + res.status);
+    err.status = res.status;
+    throw err;
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+let toastTimer;
+function toast(msg, kind){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.dataset.kind = kind || 'ok';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4200);
+}
+
+function setStatus(ok){
+  $('#status').dataset.ok = ok;
+  $('#status-text').textContent = ok ? 'API conectada' : 'Sin conexión con la API';
+}
+
+function empty(title, body, isError){
+  const d = el('div', 'empty' + (isError ? ' error' : ''));
+  d.append(el('strong', '', title), document.createTextNode(body));
+  return d;
+}
+
+function renderSignatures(){
+  const box = $('#list-sig');
+  box.replaceChildren();
+  const q = $('#q').value.trim().toLowerCase();
+  const items = state.signatures.filter(s => s.id.toLowerCase().includes(q));
+  if (!state.signatures.length){
+    box.append(empty('Todavía no hay asignaturas', 'Añade la primera con el formulario de arriba.'));
+    return;
+  }
+  if (!items.length){
+    box.append(empty('Sin resultados', 'Ninguna asignatura coincide con “' + $('#q').value + '”.'));
+    return;
+  }
+  const byYear = new Map();
+  items.forEach(s => byYear.set(s.year, [...(byYear.get(s.year) || []), s]));
+  [...byYear.keys()].sort((a, b) => a - b).forEach(y => {
+    const group = byYear.get(y).sort((a, b) => a.id.localeCompare(b.id));
+    const sec = el('section', 'year');
+    const head = el('div', 'year-head');
+    head.append(el('span', 'num', y + 'º'), el('span', 'count', group.length === 1 ? '1 asignatura' : group.length + ' asignaturas'));
+    const ul = el('ul', 'grid');
+    group.forEach(s => {
+      const li = el('li', 'card');
+      li.style.setProperty('--h', hue('degree' + s.degreeId));
+      li.append(el('div', 'code', s.id), el('div', 'meta', 'Grado ' + s.degreeId));
+      ul.append(li);
+    });
+    sec.append(head, ul);
+    box.append(sec);
+  });
+}
+
+function renderUsers(){
+  const box = $('#list-usr');
+  box.replaceChildren();
+  if (!state.users.length){
+    box.append(empty('Todavía no hay usuarios', 'Crea el primero con el formulario de arriba.'));
+    return;
+  }
+  const ul = el('ul', 'users');
+  state.users.forEach(u => {
+    const li = el('li');
+    const av = el('div', 'avatar', (u.username || '?').slice(0, 1).toUpperCase());
+    av.style.setProperty('--h', hue(u.username));
+    const info = el('div');
+    info.append(el('div', 'name', u.username), el('div', 'mail', u.email));
+    li.append(av, info);
+    ul.append(li);
+  });
+  box.append(ul);
+}
+
+async function load(){
+  const [sig, usr] = await Promise.allSettled([api('/signatures'), api('/users')]);
+  const ok = sig.status === 'fulfilled' || usr.status === 'fulfilled';
+  setStatus(ok);
+  if (sig.status === 'fulfilled'){ state.signatures = sig.value; renderSignatures(); }
+  else $('#list-sig').replaceChildren(empty('No se pudieron cargar las asignaturas', sig.reason.message + '. Comprueba que la aplicación Spring Boot está arrancada y que la base de datos responde.', true));
+  if (usr.status === 'fulfilled'){ state.users = usr.value; renderUsers(); }
+  else $('#list-usr').replaceChildren(empty('No se pudieron cargar los usuarios', usr.reason.message + '. Comprueba que la aplicación Spring Boot está arrancada y que la base de datos responde.', true));
+  $('#n-sig').textContent = sig.status === 'fulfilled' ? state.signatures.length : '';
+  $('#n-usr').textContent = usr.status === 'fulfilled' ? state.users.length : '';
+}
+
+function handleForm(formSel, build, path, okMsg, conflictMsg){
+  $(formSel).addEventListener('submit', async e => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    try {
+      await api(path, { method: 'POST', body: JSON.stringify(build(new FormData(form))) });
+      form.reset();
+      toast(okMsg);
+      await load();
+    } catch (err) {
+      toast(err.status === 409 ? conflictMsg : 'No se pudo guardar: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+handleForm('#f-sig',
+  f => ({ id: f.get('id').trim(), year: Number(f.get('year')), degreeId: Number(f.get('degreeId')) }),
+  '/signatures', 'Asignatura creada', 'Ya existe una asignatura con ese código.');
+handleForm('#f-usr',
+  f => ({ username: f.get('username').trim(), email: f.get('email').trim() }),
+  '/users', 'Usuario creado', 'Ya existe un usuario con ese nombre.');
+
+$('#q').addEventListener('input', renderSignatures);
+
+function route(){
+  const usr = location.hash === '#usuarios';
+  $('#view-asignaturas').hidden = usr;
+  $('#view-usuarios').hidden = !usr;
+  $('#nav-asignaturas').toggleAttribute('aria-current', !usr);
+  $('#nav-usuarios').toggleAttribute('aria-current', usr);
+  if (!usr) $('#nav-asignaturas').setAttribute('aria-current', 'page'); else $('#nav-usuarios').setAttribute('aria-current', 'page');
+  document.title = (usr ? 'Usuarios' : 'Asignaturas') + ' · SigRate';
+}
+window.addEventListener('hashchange', route);
+route();
+load();
+</script>
+</body>
+</html>
