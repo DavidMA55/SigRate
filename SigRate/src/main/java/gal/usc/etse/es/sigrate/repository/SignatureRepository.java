@@ -16,4 +16,5 @@ public interface SignatureRepository extends JpaRepository<Signature, String> {
 
     @Query("SELECT s FROM Signature s WHERE s.id LIKE %:id%")
     List<Signature> buscarPorId(@Param("id") String id);
+    List<Signature> findByDegreeId(int degreeId);
 }
