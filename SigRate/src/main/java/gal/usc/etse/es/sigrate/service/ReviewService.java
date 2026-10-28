@@ -4,6 +4,7 @@ import gal.usc.etse.es.sigrate.model.Review;
 import gal.usc.etse.es.sigrate.model.Signature;
 import gal.usc.etse.es.sigrate.model.User;
 import gal.usc.etse.es.sigrate.model.dto.ReviewDTO;
+import gal.usc.etse.es.sigrate.repository.EnrollmentRepository;
 import gal.usc.etse.es.sigrate.repository.ReviewRepository;
 import gal.usc.etse.es.sigrate.repository.SignatureRepository;
 import gal.usc.etse.es.sigrate.repository.UserRepository;
@@ -20,13 +21,16 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final SignatureRepository signatureRepository;
     private final UserRepository userRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     public ReviewService(ReviewRepository reviewRepository,
                          SignatureRepository signatureRepository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         EnrollmentRepository enrollmentRepository) {
         this.reviewRepository = reviewRepository;
         this.signatureRepository = signatureRepository;
         this.userRepository = userRepository;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
     @Transactional
@@ -44,6 +48,10 @@ public class ReviewService {
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(()-> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "No existe el usuario " + dto.userId()));
+
+        if (!enrollmentRepository.existsByUserIdAndSignatureId(user.getId(), signature.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo puedes reseñas asignaturas que hayas cursado");
+        }
 
         Review review = new Review();
         review.setSignature(signature);

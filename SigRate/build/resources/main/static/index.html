@@ -94,11 +94,15 @@ dialog::backdrop{background:rgba(10,16,32,.55)}
 .d-avg{display:flex;align-items:baseline;gap:12px;margin:16px 0 8px}
 .d-avg .big{font-family:var(--serif);font-size:48px;font-weight:700;line-height:1}
 .count{color:var(--ink-2);font-size:14px}
+.tools{display:flex;gap:10px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:2px;padding:2px 4px 2px 10px;border:1px solid var(--line);border-radius:999px;font-size:13px;background:var(--paper)}
+.chip-x{border:0;background:none;cursor:pointer;color:var(--ink-2);font-size:16px;line-height:1;padding:2px 6px;border-radius:999px}
 .rev{padding:14px 0;border-top:1px solid var(--line)}
 .rev .top{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
 .rev p{margin:6px 0 0;overflow-wrap:anywhere}
-#f-rev{margin-top:12px;padding-top:18px;border-top:1px solid var(--line)}
-#f-rev h3{flex:1 1 100%;margin:0;font-size:17px}
+#f-rev,#f-enr{margin-top:12px;padding-top:18px;border-top:1px solid var(--line)}
+#f-rev h3,#f-enr h3{flex:1 1 100%;margin:0;font-size:17px}
 fieldset{border:0;padding:0;margin:0;min-width:0}
 legend{font-size:14px;font-weight:500;padding:0;margin-bottom:6px}
 .rate{display:flex;gap:8px}
@@ -137,6 +141,7 @@ legend{font-size:14px;font-weight:500;padding:0;margin-bottom:6px}
     <div class="brand">SigRate<small>Lo que opinan los estudiantes de cada asignatura.</small></div>
     <nav class="nav" aria-label="Secciones">
       <a href="#asignaturas" id="nav-asignaturas">Asignaturas <span class="n" id="n-sig"></span></a>
+      <a href="#grados" id="nav-grados">Grados <span class="n" id="n-deg"></span></a>
       <a href="#usuarios" id="nav-usuarios">Usuarios <span class="n" id="n-usr"></span></a>
     </nav>
     <div class="status" id="status" data-ok="unknown"><span class="dot"></span><span id="status-text">Conectando…</span></div>
@@ -149,18 +154,39 @@ legend{font-size:14px;font-weight:500;padding:0;margin-bottom:6px}
           <h1 id="t-sig">Asignaturas</h1>
           <p class="lead">Todas las asignaturas registradas, agrupadas por curso. El color de la barra indica el grado. Pulsa una asignatura para leer y escribir reseñas.</p>
         </div>
-        <input class="search" id="q" type="search" placeholder="Buscar por código" aria-label="Buscar asignatura por código">
+        <div class="tools">
+          <select class="search" id="fdeg" aria-label="Filtrar por grado"><option value="">Todos los grados</option></select>
+          <input class="search" id="q" type="search" placeholder="Buscar por código" aria-label="Buscar asignatura por código">
+        </div>
       </div>
       <div class="panel">
         <h2>Añadir asignatura</h2>
         <form id="f-sig">
           <label>Código<input name="id" required maxlength="40" placeholder="p. ej. ES-101"></label>
           <label>Curso<input name="year" type="number" min="1" max="6" required placeholder="1"></label>
-          <label>Número de grado<input name="degreeId" type="number" min="1" required placeholder="1"></label>
+          <label>Grado<select name="degreeId" id="sel-deg" required></select></label>
           <button class="btn" type="submit">Crear asignatura</button>
         </form>
       </div>
       <div id="list-sig"></div>
+    </section>
+
+    <section id="view-grados" aria-labelledby="t-deg" hidden>
+      <div class="head">
+        <div>
+          <h1 id="t-deg">Grados</h1>
+          <p class="lead">Titulaciones que agrupan las asignaturas. Pulsa una para ver solo sus asignaturas.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Añadir grado</h2>
+        <form id="f-deg">
+          <label>Número<input name="id" type="number" min="1" required placeholder="3"></label>
+          <label>Nombre<input name="name" required maxlength="80" placeholder="p. ej. Ingeniería Informática"></label>
+          <button class="btn" type="submit">Crear grado</button>
+        </form>
+      </div>
+      <div id="list-deg"></div>
     </section>
 
     <section id="view-usuarios" aria-labelledby="t-usr" hidden>
@@ -189,10 +215,18 @@ legend{font-size:14px;font-weight:500;padding:0;margin-bottom:6px}
   </div>
   <div class="d-avg" id="d-avg"></div>
   <div id="d-reviews"></div>
+  <form id="f-enr">
+    <h3>Matrículas</h3>
+    <p class="msg" id="enr-info"></p>
+    <label>Usuario<select name="userId" required></select></label>
+    <label>Curso académico<input name="academicYear" maxlength="9" placeholder="2024/2025"></label>
+    <button class="btn" type="submit">Matricular</button>
+    <p class="msg" id="enr-msg" role="status"></p>
+  </form>
   <form id="f-rev">
     <h3>Escribir una reseña</h3>
     <label class="full">Usuario<select name="userId" required></select></label>
-    <p class="msg" id="no-users" hidden>Necesitas un usuario para opinar. <a href="#usuarios">Crea uno primero</a>.</p>
+    <p class="msg" id="no-users" hidden>Solo pueden opinar los usuarios matriculados en esta asignatura. Matricula a alguien con el formulario de arriba.</p>
     <fieldset class="full"><legend>Nota de 1 a 5</legend><div class="rate" id="rate"></div></fieldset>
     <label class="full">Comentario<textarea name="text" rows="3" maxlength="500" placeholder="¿Qué te pareció la asignatura?"></textarea></label>
     <button class="btn" type="submit">Publicar reseña</button>
@@ -203,7 +237,7 @@ legend{font-size:14px;font-weight:500;padding:0;margin-bottom:6px}
 
 <script>
 const $ = s => document.querySelector(s);
-const state = { signatures: [], users: [], avg: {} };
+const state = { signatures: [], users: [], degrees: [], enroll: {}, avg: {} };
 
 function el(tag, cls, text){
   const e = document.createElement(tag);
@@ -250,13 +284,14 @@ function renderSignatures(){
   const box = $('#list-sig');
   box.replaceChildren();
   const q = $('#q').value.trim().toLowerCase();
-  const items = state.signatures.filter(s => s.id.toLowerCase().includes(q));
+  const deg = $('#fdeg').value;
+  const items = state.signatures.filter(s => s.id.toLowerCase().includes(q) && (!deg || String(s.degreeId) === deg));
   if (!state.signatures.length){
     box.append(empty('Todavía no hay asignaturas', 'Añade la primera con el formulario de arriba.'));
     return;
   }
   if (!items.length){
-    box.append(empty('Sin resultados', 'Ninguna asignatura coincide con “' + $('#q').value + '”.'));
+    box.append(empty('Sin resultados', 'Ninguna asignatura coincide con los filtros.'));
     return;
   }
   const byYear = new Map();
@@ -272,7 +307,7 @@ function renderSignatures(){
       li.style.setProperty('--h', hue('degree' + s.degreeId));
       const b = el('button', 'open');
       b.type = 'button';
-      b.append(el('div', 'code', s.id), el('div', 'meta', 'Grado ' + s.degreeId), ratingBadge(state.avg[s.id]));
+      b.append(el('div', 'code', s.id), el('div', 'meta', degName(s.degreeId)), ratingBadge(state.avg[s.id]));
       b.addEventListener('click', () => openSignature(s));
       li.append(b);
       ul.append(li);
@@ -295,7 +330,19 @@ function renderUsers(){
     const av = el('div', 'avatar', (u.username || '?').slice(0, 1).toUpperCase());
     av.style.setProperty('--h', hue(u.username));
     const info = el('div');
-    info.append(el('div', 'name', u.username), el('div', 'mail', u.email));
+    const chips = el('div', 'chips');
+    const ens = state.enroll[u.id] || [];
+    if (!ens.length) chips.append(el('span', 'count', 'Sin matrículas'));
+    ens.forEach(en => {
+      const c = el('span', 'chip', en.signatureId + (en.academicYear ? ' ' + en.academicYear : ''));
+      const x = el('button', 'chip-x', '×');
+      x.type = 'button';
+      x.setAttribute('aria-label', 'Quitar la matrícula de ' + en.signatureId + ' a ' + u.username);
+      x.addEventListener('click', () => unenroll(u, en.signatureId));
+      c.append(x);
+      chips.append(c);
+    });
+    info.append(el('div', 'name', u.username), el('div', 'mail', u.email), chips);
     li.append(av, info);
     ul.append(li);
   });
@@ -303,15 +350,19 @@ function renderUsers(){
 }
 
 async function load(){
-  const [sig, usr] = await Promise.allSettled([api('/signatures'), api('/users')]);
-  const ok = sig.status === 'fulfilled' || usr.status === 'fulfilled';
-  setStatus(ok);
-  if (sig.status === 'fulfilled'){ state.signatures = sig.value; await loadAverages(); renderSignatures(); }
-  else $('#list-sig').replaceChildren(empty('No se pudieron cargar las asignaturas', sig.reason.message + '. Comprueba que la aplicación Spring Boot está arrancada y que la base de datos responde.', true));
-  if (usr.status === 'fulfilled'){ state.users = usr.value; renderUsers(); }
-  else $('#list-usr').replaceChildren(empty('No se pudieron cargar los usuarios', usr.reason.message + '. Comprueba que la aplicación Spring Boot está arrancada y que la base de datos responde.', true));
+  const [sig, usr, deg] = await Promise.allSettled([api('/signatures'), api('/users'), api('/degrees')]);
+  setStatus(sig.status === 'fulfilled' || usr.status === 'fulfilled' || deg.status === 'fulfilled');
+  const fail = (box, what, r) => $(box).replaceChildren(empty('No se pudieron cargar ' + what, r.reason.message + '. Comprueba que la aplicación Spring Boot está arrancada y que la base de datos responde.', true));
+  if (deg.status === 'fulfilled') state.degrees = deg.value;
+  if (usr.status === 'fulfilled'){ state.users = usr.value; await loadEnrollments(); }
+  if (sig.status === 'fulfilled'){ state.signatures = sig.value; await loadAverages(); }
+  renderDegrees();
+  if (deg.status !== 'fulfilled') fail('#list-deg', 'los grados', deg);
+  if (sig.status === 'fulfilled') renderSignatures(); else fail('#list-sig', 'las asignaturas', sig);
+  if (usr.status === 'fulfilled') renderUsers(); else fail('#list-usr', 'los usuarios', usr);
   $('#n-sig').textContent = sig.status === 'fulfilled' ? state.signatures.length : '';
   $('#n-usr').textContent = usr.status === 'fulfilled' ? state.users.length : '';
+  $('#n-deg').textContent = deg.status === 'fulfilled' ? state.degrees.length : '';
 }
 
 function handleForm(formSel, build, path, okMsg, conflictMsg){
@@ -339,6 +390,9 @@ handleForm('#f-sig',
 handleForm('#f-usr',
   f => ({ username: f.get('username').trim(), email: f.get('email').trim() }),
   '/users', 'Usuario creado', 'Ya existe un usuario con ese nombre.');
+handleForm('#f-deg',
+  f => ({ id: Number(f.get('id')), name: f.get('name').trim() }),
+  '/degrees', 'Grado creado', 'Ya existe un grado con ese número.');
 
 const fmtAvg = a => a.toFixed(1).replace('.', ',');
 const stars = n => '★'.repeat(n) + '☆'.repeat(5 - n);
@@ -410,15 +464,11 @@ async function refreshReviews(){
 function openSignature(s){
   current = s;
   $('#d-title').textContent = s.id;
-  $('#d-sub').textContent = s.year + 'º curso, grado ' + s.degreeId;
+  $('#d-sub').textContent = s.year + 'º curso, ' + degName(s.degreeId);
   $('#d-avg').replaceChildren();
   $('#d-reviews').replaceChildren();
-  const sel = $('#f-rev select');
-  sel.replaceChildren();
-  state.users.forEach(u => { const o = el('option', '', u.username); o.value = u.id; sel.append(o); });
-  const none = !state.users.length;
-  $('#no-users').hidden = !none;
-  $('#f-rev button[type=submit]').disabled = none;
+  fillEnrollUI();
+  setMsg('#enr-msg', '');
   revMsg('');
   $('#dlg').showModal();
   refreshReviews();
@@ -432,7 +482,6 @@ for (let i = 1; i <= 5; i++){
   $('#rate').append(l);
 }
 $('#d-close').addEventListener('click', () => $('#dlg').close());
-$('#no-users a').addEventListener('click', () => $('#dlg').close());
 
 $('#f-rev').addEventListener('submit', async e => {
   e.preventDefault();
@@ -458,15 +507,111 @@ $('#f-rev').addEventListener('submit', async e => {
 });
 
 $('#q').addEventListener('input', renderSignatures);
+$('#fdeg').addEventListener('change', renderSignatures);
+
+function degName(id){
+  const d = state.degrees.find(d => d.id === id);
+  return d ? d.name : 'Grado ' + id;
+}
+
+function renderDegrees(){
+  const fd = $('#fdeg'), sd = $('#sel-deg'), keep = fd.value;
+  fd.replaceChildren(new Option('Todos los grados', ''));
+  sd.replaceChildren();
+  state.degrees.forEach(d => { fd.append(new Option(d.name, d.id)); sd.append(new Option(d.name, d.id)); });
+  fd.value = keep;
+  const box = $('#list-deg');
+  box.replaceChildren();
+  if (!state.degrees.length){
+    box.append(empty('Todavía no hay grados', 'Crea el primero con el formulario de arriba.'));
+    return;
+  }
+  const ul = el('ul', 'grid');
+  state.degrees.forEach(d => {
+    const n = state.signatures.filter(s => s.degreeId === d.id).length;
+    const li = el('li', 'card');
+    li.style.setProperty('--h', hue('degree' + d.id));
+    const b = el('button', 'open');
+    b.type = 'button';
+    b.append(el('div', 'code', d.name), el('div', 'meta', n === 1 ? '1 asignatura' : n + ' asignaturas'));
+    b.addEventListener('click', () => { $('#fdeg').value = String(d.id); renderSignatures(); location.hash = '#asignaturas'; });
+    li.append(b);
+    ul.append(li);
+  });
+  box.append(ul);
+}
+
+async function loadEnrollments(){
+  state.enroll = {};
+  await Promise.all(state.users.map(async u => {
+    try { state.enroll[u.id] = await api('/users/' + u.id + '/enrollments'); }
+    catch (_) { state.enroll[u.id] = []; }
+  }));
+}
+
+function setMsg(sel, text, kind){
+  const m = $(sel);
+  m.textContent = text || '';
+  m.dataset.kind = kind || '';
+}
+
+function fillEnrollUI(){
+  const yes = state.users.filter(u => (state.enroll[u.id] || []).some(e => e.signatureId === current.id));
+  const no = state.users.filter(u => !yes.includes(u));
+  const fill = (sel, users) => { sel.replaceChildren(); users.forEach(u => sel.append(new Option(u.username, u.id))); };
+  fill($('#f-enr select'), no);
+  fill($('#f-rev select'), yes);
+  $('#enr-info').textContent = !state.users.length ? 'Crea primero un usuario en la sección Usuarios.'
+    : yes.length ? 'Matriculados: ' + yes.map(u => u.username).join(', ') : 'Todavía no hay nadie matriculado.';
+  $('#f-enr button[type=submit]').disabled = !no.length;
+  $('#no-users').hidden = yes.length > 0;
+  $('#f-rev button[type=submit]').disabled = !yes.length;
+}
+
+$('#f-enr').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const btn = f.querySelector('button[type=submit]');
+  const d = new FormData(f);
+  btn.disabled = true;
+  setMsg('#enr-msg', '');
+  try {
+    await api('/users/' + d.get('userId') + '/enrollments', {
+      method: 'POST',
+      body: JSON.stringify({ signatureId: current.id, academicYear: d.get('academicYear').trim() || null })
+    });
+    f.querySelector('input').value = '';
+    await loadEnrollments();
+    fillEnrollUI();
+    renderUsers();
+    setMsg('#enr-msg', 'Matrícula registrada', 'ok');
+  } catch (err){
+    btn.disabled = false;
+    setMsg('#enr-msg', 'No se pudo matricular: ' + err.message, 'error');
+  }
+});
+
+async function unenroll(u, sid){
+  if (!confirm('¿Quitar la matrícula de ' + sid + ' a ' + u.username + '? Sus reseñas se conservan.')) return;
+  try {
+    await api('/users/' + u.id + '/enrollments/' + encodeURIComponent(sid), { method: 'DELETE' });
+    toast('Matrícula eliminada');
+    await loadEnrollments();
+    renderUsers();
+  } catch (err){
+    toast('No se pudo quitar la matrícula: ' + err.message, 'error');
+  }
+}
 
 function route(){
-  const usr = location.hash === '#usuarios';
-  $('#view-asignaturas').hidden = usr;
-  $('#view-usuarios').hidden = !usr;
-  $('#nav-asignaturas').toggleAttribute('aria-current', !usr);
-  $('#nav-usuarios').toggleAttribute('aria-current', usr);
-  if (!usr) $('#nav-asignaturas').setAttribute('aria-current', 'page'); else $('#nav-usuarios').setAttribute('aria-current', 'page');
-  document.title = (usr ? 'Usuarios' : 'Asignaturas') + ' · SigRate';
+  const h = location.hash.slice(1);
+  const v = h === 'grados' || h === 'usuarios' ? h : 'asignaturas';
+  ['asignaturas', 'grados', 'usuarios'].forEach(n => {
+    $('#view-' + n).hidden = n !== v;
+    const a = $('#nav-' + n);
+    if (n === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+  });
+  document.title = v.charAt(0).toUpperCase() + v.slice(1) + ' · SigRate';
 }
 window.addEventListener('hashchange', route);
 route();
