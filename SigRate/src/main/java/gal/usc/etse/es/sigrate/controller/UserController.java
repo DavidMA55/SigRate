@@ -30,9 +30,4 @@ public class UserController {
         UserDTO dto = users.getById(id);
         return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
-
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
-        return ResponseEntity.ok(users.create(user));
-    }
 }
