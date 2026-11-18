@@ -87,7 +87,7 @@ public class AuthService {
 
     @Transactional
     public TokenResponseDTO refresh(String receivedToken) {
-        RefreshToken rt = refreshTokenRepository.findByTokenRevokedFalse(receivedToken)
+        RefreshToken rt = refreshTokenRepository.findByTokenAndRevokedFalse(receivedToken)
                 .orElseThrow(() -> new BadCredentialsException("Refresh token inválido o revocado"));
 
         if(rt.getExpirationDate().isBefore(Instant.now())) {
