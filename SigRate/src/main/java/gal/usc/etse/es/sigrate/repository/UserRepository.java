@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
+    Boolean existsByEmail(String email);
+    Boolean existsByUsername(String username);
 
     @Query("SELECT u FROM User u WHERE u.email LIKE %:dominio")
     List<User> buscarPorDominioEmail(@Param("dominio") String dominio);
