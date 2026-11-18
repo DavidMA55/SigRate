@@ -5,6 +5,7 @@ import gal.usc.etse.es.sigrate.model.dto.ReviewDTO;
 import gal.usc.etse.es.sigrate.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,9 +22,10 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<ReviewDTO> create(@PathVariable String signatureId,
-                                            @RequestBody ReviewDTO review) {
+                                            @RequestBody ReviewDTO review,
+                                            Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(reviewService.create(signatureId, review));
+                .body(reviewService.create(signatureId, review, authentication.getName()));
     }
 
     @GetMapping

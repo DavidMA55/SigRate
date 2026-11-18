@@ -34,7 +34,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewDTO create(String signatureId, ReviewDTO dto){
+    public ReviewDTO create(String signatureId, ReviewDTO dto, String username){
         if (dto.rating() < 1 || dto.rating() > 5) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "La nota debe estar entre 1 y 5");
@@ -45,9 +45,9 @@ public class ReviewService {
 
         }
         Signature signature = findSignature(signatureId);
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(()-> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No existe el usuario " + dto.userId()));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "No existe el usuario " + username));
 
         if (!enrollmentRepository.existsByUserIdAndSignatureId(user.getId(), signature.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo puedes reseñas asignaturas que hayas cursado");
