@@ -20,13 +20,6 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public UserDTO create(UserDTO user) {
-        if (userRepository.findByUsername(user.username()).isPresent()) {
-            throw new DuplicatedUserException(user.username());
-        }
-        return UserDTO.from(userRepository.save(User.from(user)));
-    }
-
     public List<UserDTO> get() {
         return userRepository.findAll().stream().map(UserDTO::from).toList();
     }
